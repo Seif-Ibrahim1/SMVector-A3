@@ -5,21 +5,21 @@ template <typename T>
 class SMVector {
 private:
     typedef T* iterator;
-    int s;
-    int c;
-    T* data;
+    int _size;
+    int _capacity;
+    T* _vec;
 public:
     // Constructors and Big 4
 
     // Initialize by specific capacity
     // No content is added, size = 0
     // Assign a default size value
-    SMVector (int _c) {
+    SMVector (int) {
 
     }		
 
     // Initialize by n items from array
-    SMVector (T*, int  n) {
+    SMVector (T*, int) {
 
     }
 
@@ -31,19 +31,37 @@ public:
     // seif
     // Delete allocated memory	
     ~SMVector() {
-
+        delete[] _vec;
     }
 
     // seif
     // Copy assignment			
-    SMVector &operator=(const SMVector&) {
-
+    SMVector &operator=(const SMVector& other) {
+        if(*this != other) {
+            delete[] _vec;
+            _capacity = other._capacity;
+            _size = other._size;
+            _vec = new T[_capacity];
+            for(int i = 0; i < _size; i++) {
+                _vec[i] = other._vec[i];
+            }
+        }
+        return *this;
     }
 
     // seif
     // Move assignment  
-    SMVector &operator=(const SMVector&&) {
-
+    SMVector &operator=(const SMVector&& other) {
+        if (*this != other) {
+            delete[] _vec;
+            _capacity = other._capacity;
+            _size = other._size;
+            _vec = other._vec;    
+            other._vec = nullptr;
+            other._capacity = 0;
+            other._size = 0;
+        }
+        return *this;
     }	 
 
     // Access operations
@@ -68,8 +86,8 @@ public:
     // seif
     // Remove item at iterator
     // Throw exception if invalid iter
-    void erase(iterator) {
-
+    void erase(iterator i) {
+        
     }
 
     // seif
