@@ -87,15 +87,27 @@ public:
     // Remove item at iterator
     // Throw exception if invalid iter
     void erase(iterator i) {
-        
+        int index = 0;
+        for(int j = 0; j < _size; j++) {
+            if(_vec[j] != *i) {
+                _vec[index++] = _vec[j];
+            }
+        }
+        _size = index;
     }
 
     // seif
     // Remove items between
     // iterator 1 <= iterator 2 otherwise do nothing
     // Throw exception if any iterator outside range       
-    void erase(iterator, iterator) {
-
+    void erase(iterator iterator1, iterator iterator2) {
+        int index = 0;
+        for(int j = 0; j < _size; j++) {
+            if(_vec[j] < iterator1 && _vec[j] > iterator2) {
+                _vec[index++] = _vec[j];
+            }
+        }
+        _size = index;
     }	
 
     // Delete all vector content
@@ -112,13 +124,13 @@ public:
     // seif
     // Return an iterator (T*)
     iterator begin() {
-
+        return _vec;
     }
 
     // seif
     // Return an iterator (T*)
     iterator end() {
-
+        return _vec + _size;
     }		
 
     // Comparison operations
@@ -130,8 +142,17 @@ public:
     // seif
     // Compares item by item
     // Return true if first different item in this is < in other
-    bool operator< (const SMVector<T>&) {
-        return true;
+    bool operator< (const SMVector<T>& other) {
+        int s = (_size <= other._size) ? _size : other._size;
+        for(int i = 0; i < s; i++) {
+            if(_vec[i] < other._vec[i]) {
+                return true;
+            } else if(_vec[i] > other._vec[i]) {
+                return false;
+            }
+        }
+        return (_size < other._size);
+
     }	
 
     // Capacity operations
@@ -148,7 +169,16 @@ public:
     // seif
     // Relocate to bigger space
     int resize() {
-        return 1;
+        _capacity *= 2;
+        T* newVec = new T[_capacity];
+        for(int i = 0; i < _size; i++) {
+            newVec[i] = _vec[i];
+        }
+        delete[] _vec;
+        _vec = newVec;
+        delete[] newVec;
+
+        return _capacity;
     }	
 
     // Return true if size is 0
@@ -158,7 +188,10 @@ public:
 
     // seif
     // Friends
-    friend ostream& operator << (ostream& out, SMVector<T>){
+    friend ostream& operator << (ostream& out, SMVector<T> vec){
+        for(int i = 0; i < vec._size; i++) {
+            cout << vec[i] << " ";
+        }
         return out;
     }
 };
