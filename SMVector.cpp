@@ -28,16 +28,19 @@ public:
 
     }	
 
+    // seif
     // Delete allocated memory	
     ~SMVector() {
 
-    }	
+    }
 
+    // seif
     // Copy assignment			
     SMVector &operator=(const SMVector&) {
 
-    }	
+    }
 
+    // seif
     // Move assignment  
     SMVector &operator=(const SMVector&&) {
 
@@ -60,14 +63,16 @@ public:
     // Remove and return last element in vec
     T pop_back()  {
 
-    }	   
+    }
 
+    // seif
     // Remove item at iterator
     // Throw exception if invalid iter
     void erase(iterator) {
 
-    }	
+    }
 
+    // seif
     // Remove items between
     // iterator 1 <= iterator 2 otherwise do nothing
     // Throw exception if any iterator outside range       
@@ -84,13 +89,15 @@ public:
     // Throw exception if invalid 
     void insert(iterator, T) {
 
-    }	    
+    }
 
+    // seif
     // Return an iterator (T*)
     iterator begin() {
 
-    }	
+    }
 
+    // seif
     // Return an iterator (T*)
     iterator end() {
 
@@ -100,8 +107,9 @@ public:
     // Return true if ==
     bool operator==(const SMVector<T>&) {
         return true;
-    }	
+    }
 
+    // seif
     // Compares item by item
     // Return true if first different item in this is < in other
     bool operator< (const SMVector<T>&) {
@@ -117,8 +125,9 @@ public:
     // Return size of current allocated array
     int capacity() const {
         return 1;
-    }	
+    }
 
+    // seif
     // Relocate to bigger space
     int resize() {
         return 1;
@@ -127,8 +136,9 @@ public:
     // Return true if size is 0
     bool empty() {
         return true;
-    }	 
+    }
 
+    // seif
     // Friends
     friend ostream& operator << (ostream& out, SMVector<T>){
         return out;
