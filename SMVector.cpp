@@ -8,24 +8,46 @@ private:
     int _size;
     int _capacity;
     T* _vec;
+    //function return number of elemts in _vec
+    // int NumOfElements(){
+    //     int NumExist = 0 ;
+    //     while (_vec[NumExist]){
+    //         NumExist++;
+    //     }
+    //     return NumExist;
+    // }
 public:
     // Constructors and Big 4
 
     // Initialize by specific capacity
     // No content is added, size = 0
     // Assign a default size value
-    SMVector (int) {
-
+    SMVector (int sz) {
+        try{
+            if (sz<0){
+                throw "Error";
+            }
+            _size = 0;
+            _capacity = sz;
+            _vec = new T[_capacity];
+        }
+        catch(char *err){
+            std::cout << err<< " Negative Number."<< '\n';
+        }
     }		
 
     // Initialize by n items from array
-    SMVector (T*, int) {
-
+    SMVector (T* arr, int sz) {
+        _size = sz;
+        _vec = arr;
+        _capacity = sz;
     }
 
     // Initialize with a copy	
-    SMVector (const SMVector&) {
-
+    SMVector (const SMVector& other) {
+        _size = other._size;
+        _capacity = other._capacity;
+        _vec = other._vec;
     }	
 
     // seif
@@ -67,20 +89,45 @@ public:
     // Access operations
     // Access item by reference
     // Throw an exception if out of range
-    T& operator[](int) {
-
+    T& operator[](int index) {
+        try{
+            if (index < 0 || index >= _size){
+                throw index;
+            }
+            return _vec[index];
+        }
+        catch(int i){
+            std::cout<<"Negative index or out of Range!"<<endl;
+        }
     }	
 
     // Modifying operations
     // Add item to end of vec & return # of items
     // Increase capacity of needed
-    int push_back(T) {
-        return 1;
+    int push_back(T item) {
+        _vec[_size] = item;
+        _size++;
+        if (_size > _capacity){
+            _capacity += (_capacity/2); 
+        }
+        return _size;
     }	
 
     // Remove and return last element in vec
     T pop_back()  {
-
+        T* newarr = new T[_size-1];
+        //copy all elemets in new array except last one  
+        for (size_t i = 0; i < _size-1; i++){
+            newarr = _vec[i];
+        }
+        //copy all elemets from new array to the vec
+        for (size_t i = 0; i < _size-1; i++){
+            _vec[i]  = newarr;
+        }
+        //reduce size by 1
+        _size--;
+        delete[] newarr;
+        return _vec[_size];
     }
 
     // seif
@@ -112,13 +159,35 @@ public:
 
     // Delete all vector content
     void clear() {
-
+        delete[] _vec;
     }	 
 
     // Insert item at iterator
-    // Throw exception if invalid 
-    void insert(iterator, T) {
-
+    // Throw exception if invalid
+    // 10 1 2 3 4 5
+    void insert(iterator i, T ins) {
+        if (_size == _capacity){
+            resize();
+        }
+        T* newarr = new T[_size+1];
+        int po = 0;
+        for (po; po < _size; po++){
+            if (_vec[po] == *i){
+                break;
+            }
+        }
+        int x = 0;
+        for (int j = 0; j < _size+1; j++){
+            if (po == j){
+                newarr[j] = ins;
+                j++;
+            }
+            newarr[j] = _vec[x];
+            x++;
+        }
+        _vec = newarr;
+        delete[] newarr;
+        _size++;
     }
 
     // seif
@@ -130,7 +199,7 @@ public:
     // seif
     // Return an iterator (T*)
     iterator end() {
-        return _vec + _size;
+        return _vec + (_size -1);
     }		
 
     // Comparison operations
@@ -158,12 +227,12 @@ public:
     // Capacity operations
     // Return current size of vec
     int size() const {
-        return 1;
+        return _size;
     }	 
 
     // Return size of current allocated array
     int capacity() const {
-        return 1;
+        return _capacity;
     }
 
     // seif
@@ -183,7 +252,10 @@ public:
 
     // Return true if size is 0
     bool empty() {
-        return true;
+        if (_size == 0){
+            return true;
+        }
+        return false;
     }
 
     // seif
