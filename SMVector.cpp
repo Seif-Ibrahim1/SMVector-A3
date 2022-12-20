@@ -8,6 +8,14 @@ private:
     int _size;
     int _capacity;
     T* _vec;
+    int getIndex(iterator iter) {
+        for(int i = 0; i < _size; i++) {
+            if(_vec[i] == *iter) {
+                return i;
+            }
+        }
+        return -1;
+    }
     //function return number of elemts in _vec
     // int NumOfElements(){
     //     int NumExist = 0 ;
@@ -134,13 +142,20 @@ public:
     // Remove item at iterator
     // Throw exception if invalid iter
     void erase(iterator i) {
+        T* newVec = new T[_capacity];
         int index = 0;
         for(int j = 0; j < _size; j++) {
-            if(_vec[j] != *i) {
-                _vec[index++] = _vec[j];
+            if(_vec[j] != *i){
+                newVec[index++] = _vec[j];
             }
         }
         _size = index;
+        _vec = new T[_capacity];
+        for(int j = 0; j < _size; j++) {
+            _vec[j] = newVec[j];
+        }
+        delete[] newVec;
+
     }
 
     // seif
@@ -148,12 +163,21 @@ public:
     // iterator 1 <= iterator 2 otherwise do nothing
     // Throw exception if any iterator outside range       
     void erase(iterator iterator1, iterator iterator2) {
+        T* newVec = new T[_capacity];
         int index = 0;
         for(int j = 0; j < _size; j++) {
-            if(_vec[j] < iterator1 && _vec[j] > iterator2) {
-                _vec[index++] = _vec[j];
+            if(_vec[j] == *iterator1) {
+                while(_vec[j++] != *iterator2) {
+                    continue;
+                }
             }
+            newVec[index++] = _vec[j];
         }
+        _vec = new T[_capacity];
+        for(int j = 0; j < _size; j++) {
+            _vec[j] = newVec[j];
+        }
+        delete[] newVec;
         _size = index;
     }	
 
@@ -244,7 +268,10 @@ public:
             newVec[i] = _vec[i];
         }
         delete[] _vec;
-        _vec = newVec;
+        _vec = new T[_capacity];
+        for(int i = 0; i < _size; i++) {
+            _vec[i] = newVec[i];
+        }
         delete[] newVec;
 
         return _capacity;
@@ -260,7 +287,7 @@ public:
 
     // seif
     // Friends
-    friend ostream& operator << (ostream& out, SMVector<T> vec){
+    friend ostream& operator<<(ostream& out, SMVector<T> vec){
         for(int i = 0; i < vec._size; i++) {
             cout << vec[i] << " ";
         }
