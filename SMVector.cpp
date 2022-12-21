@@ -193,13 +193,18 @@ public:
         if (_size == _capacity){
             resize();
         }
-        T* newarr = new T[_size+1];
-        int po = 0;
-        for (po; po < _size; po++){
-            if (_vec[po] == *i){
-                break;
+        int po = getIndex(i);
+        try{
+            if (po == -1){
+                throw -1;
             }
+            
         }
+        catch(int a){
+            cout<<"Iterator doesn't exist"<<endl;
+            return;
+        }
+        T* newarr = new T[_size+1];
         int x = 0;
         for (int j = 0; j < _size+1; j++){
             if (po == j){
