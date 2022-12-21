@@ -1,5 +1,22 @@
 #include <iostream>
+#include <exception>
 using namespace std;
+
+class Invaliditerator : public exception {
+    public:
+    Invaliditerator(){}
+    virtual const char* what() const throw() {
+        return "invalid iterator";
+    }
+};
+
+class OutOfRange : public exception {
+    public:
+    OutOfRange(){}
+    virtual const char* what() const throw() {
+        return "Out of range";
+    }
+};
 
 template <typename T>
 class SMVector {
@@ -124,7 +141,7 @@ public:
     // Remove and return last element in vec
     T pop_back()  {
         T* newarr = new T[_size-1];
-        //copy all elemets in new array except last one  
+        //copy all elemets in new array except last one
         for (size_t i = 0; i < _size-1; i++){
             newarr = _vec[i];
         }
@@ -142,6 +159,9 @@ public:
     // Remove item at iterator
     // Throw exception if invalid iter
     void erase(iterator i) {
+        if(getIndex(i) == -1) {
+            throw Invaliditerator();
+        }
         T* newVec = new T[_capacity];
         int index = 0;
         for(int j = 0; j < _size; j++) {
@@ -163,6 +183,17 @@ public:
     // iterator 1 <= iterator 2 otherwise do nothing
     // Throw exception if any iterator outside range       
     void erase(iterator iterator1, iterator iterator2) {
+
+        int i1 = getIndex(iterator1);
+        int i2 = getIndex(iterator2);
+        if(i1 == -1 || i2 == -1) {
+            throw Invaliditerator();
+        }
+
+        if(i1 >= i2) {
+            throw OutOfRange();
+        }
+
         T* newVec = new T[_capacity];
         int index = 0;
         for(int j = 0; j < _size; j++) {
@@ -287,7 +318,7 @@ public:
 
     // seif
     // Friends
-    friend ostream& operator<<(ostream& out, SMVector<T> vec){
+    friend ostream& operator<<(ostream& out, SMVector<T>& vec){
         for(int i = 0; i < vec._size; i++) {
             cout << vec[i] << " ";
         }
