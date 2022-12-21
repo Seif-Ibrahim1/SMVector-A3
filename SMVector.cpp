@@ -1,22 +1,6 @@
 #include <iostream>
-#include <exception>
+#include "exceptions.cpp"
 using namespace std;
-
-class Invaliditerator : public exception {
-    public:
-    Invaliditerator(){}
-    virtual const char* what() const throw() {
-        return "invalid iterator";
-    }
-};
-
-class OutOfRange : public exception {
-    public:
-    OutOfRange(){}
-    virtual const char* what() const throw() {
-        return "Out of range";
-    }
-};
 
 template <typename T>
 class SMVector {
@@ -48,17 +32,12 @@ public:
     // No content is added, size = 0
     // Assign a default size value
     SMVector (int sz) {
-        try{
             if (sz<0){
-                throw "Error";
+                throw InvalidSize();
             }
             _size = 0;
             _capacity = sz;
             _vec = new T[_capacity];
-        }
-        catch(char *err){
-            std::cout << err<< " Negative Number."<< '\n';
-        }
     }		
 
     // Initialize by n items from array
@@ -115,15 +94,10 @@ public:
     // Access item by reference
     // Throw an exception if out of range
     T& operator[](int index) {
-        try{
-            if (index < 0 || index >= _size){
-                throw index;
-            }
-            return _vec[index];
+        if (index < 0 || index >= _size){
+            throw OutOfRange();
         }
-        catch(int i){
-            std::cout<<"Negative index or out of Range!"<<endl;
-        }
+        return _vec[index];
     }	
 
     // Modifying operations
@@ -224,20 +198,19 @@ public:
         if (_size == _capacity){
             resize();
         }
-        int po = getIndex(i);
-        try{
-            if (po == -1){
-                throw -1;
-            }
-            
+        int po;
+        if(_size != 0) {
+            po = getIndex(i);
+        } else {
+            po = 0;
         }
-        catch(int a){
-            cout<<"Iterator doesn't exist"<<endl;
-            return;
+        
+        if (po == -1) {
+                throw Invaliditerator();
         }
-        T* newarr = new T[_size+1];
+        T* newarr = new T[++_size];
         int x = 0;
-        for (int j = 0; j < _size+1; j++){
+        for (int j = 0; j < _size ; j++){
             if (po == j){
                 newarr[j] = ins;
                 j++;
@@ -245,9 +218,11 @@ public:
             newarr[j] = _vec[x];
             x++;
         }
-        _vec = newarr;
+        _vec = new T[_capacity];
+        for(int j = 0; j < _size; j++) {
+            _vec[j] = newarr[j];
+        }
         delete[] newarr;
-        _size++;
     }
 
     // seif
