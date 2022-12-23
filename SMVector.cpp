@@ -17,14 +17,7 @@ private:
         }
         return -1;
     }
-    //function return number of elemts in _vec
-    // int NumOfElements(){
-    //     int NumExist = 0 ;
-    //     while (_vec[NumExist]){
-    //         NumExist++;
-    //     }
-    //     return NumExist;
-    // }
+
 public:
     // Constructors and Big 4
 
@@ -45,8 +38,14 @@ public:
 
     // Initialize by n items from array
     SMVector (T* arr, int sz) {
+        if (sz<0){
+            throw InvalidSize();
+        }
         _size = sz;
-        _vec = arr;
+        _vec = new T[_capacity];
+        for(int i = 0; i < _size; i++) {
+            _vec[i] = arr[i];
+        }
         _capacity = sz;
     }
 
@@ -54,7 +53,10 @@ public:
     SMVector (const SMVector& other) {
         _size = other._size;
         _capacity = other._capacity;
-        _vec = other._vec;
+        _vec = new T[_capacity];
+        for(int i = 0; i < _size; i++) {
+            _vec[i] = other._vec[i];
+        }
     }	
 
     // seif
@@ -81,16 +83,13 @@ public:
     // seif
     // Move assignment  
     SMVector &operator=(const SMVector&& other) {
-        if (*this != other) {
-            delete[] _vec;
             _capacity = other._capacity;
             _size = other._size;
             _vec = other._vec;    
             other._vec = nullptr;
             other._capacity = 0;
             other._size = 0;
-        }
-        return *this;
+            return *this;
     }	 
 
     // Access operations
@@ -123,14 +122,17 @@ public:
 
     // Remove and return last element in vec
     T pop_back()  {
+        if(_size == 0) {
+            throw OutOfRange();
+        }
         T* newarr = new T[_size-1];
         //copy all elemets in new array except last one
-        for (size_t i = 0; i < _size-1; i++){
-            newarr = _vec[i];
+        for (int i = 0; i < _size-1; i++){
+            newarr[i] = _vec[i];
         }
         //copy all elemets from new array to the vec
-        for (size_t i = 0; i < _size-1; i++){
-            _vec[i]  = newarr;
+        for (int i = 0; i < _size-1; i++){
+            _vec[i]  = newarr[i];
         }
         //reduce size by 1
         _size--;
@@ -199,6 +201,8 @@ public:
     // Delete all vector content
     void clear() {
         delete[] _vec;
+        _vec = new T[_capacity];
+        _size = 0 ;
     }	 
 
     // Insert item at iterator
@@ -252,7 +256,7 @@ public:
     // seif
     // Return an iterator (T*)
     iterator end() {
-        return _vec + (_size -1);
+        return _vec + (_size - 2);
     }		
 
     // Comparison operations
