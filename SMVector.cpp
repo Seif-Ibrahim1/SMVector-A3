@@ -32,12 +32,15 @@ public:
     // No content is added, size = 0
     // Assign a default size value
     SMVector (int sz) {
-            if (sz<0){
-                throw InvalidSize();
-            }
-            _size = 0;
-            _capacity = sz;
-            _vec = new T[_capacity];
+        if (sz<0){
+            throw InvalidSize();
+        }
+        //intialize the size by 0
+        _size = 0;
+        //give the capacity the number
+        _capacity = sz;
+        //create array of pointers of the given number 
+        _vec = new T[_capacity];
     }		
 
     // Initialize by n items from array
@@ -94,9 +97,11 @@ public:
     // Access item by reference
     // Throw an exception if out of range
     T& operator[](int index) {
+        //check if the index is valid or not
         if (index < 0 || index >= _size){
             throw OutOfRange();
         }
+        //if it valid return the index
         return _vec[index];
     }	
 
@@ -104,11 +109,15 @@ public:
     // Add item to end of vec & return # of items
     // Increase capacity of needed
     int push_back(T item) {
+        //push the item in the vec
         _vec[_size] = item;
+        //increase the size 
         _size++;
+        //extend the capacity
         if (_size > _capacity){
             _capacity += (_capacity/2); 
         }
+        //return size after adding the new elemnt
         return _size;
     }	
 
@@ -125,6 +134,7 @@ public:
         }
         //reduce size by 1
         _size--;
+        //delete the new array
         delete[] newarr;
         return _vec[_size];
     }
@@ -195,6 +205,7 @@ public:
     // Throw exception if invalid
     // 10 1 2 3 4 5
     void insert(iterator i, T ins) {
+        //if the size is equal increase the capacity
         if (_size == _capacity){
             resize();
         }
@@ -202,26 +213,33 @@ public:
         if(_size != 0) {
             po = getIndex(i);
         } else {
+            //this means that the array is empty so we insert in first position
             po = 0;
         }
-        
+        //if the po is -1 so this is means that the iterator is invalid
         if (po == -1) {
                 throw Invaliditerator();
         }
+        //create new arry
         T* newarr = new T[++_size];
-        int x = 0;
+        int x = 0; // used as a counter
         for (int j = 0; j < _size ; j++){
+            //if the position exist add the elemnt and increase the counter j by 1
             if (po == j){
                 newarr[j] = ins;
                 j++;
             }
+            //copy the elemnts
             newarr[j] = _vec[x];
-            x++;
+            x++;//increase the other counter
         }
+        //make new array of pointers 
         _vec = new T[_capacity];
+        //copy all new elemets after insert the elemet to the private vec 
         for(int j = 0; j < _size; j++) {
             _vec[j] = newarr[j];
         }
+        //delete the newarr
         delete[] newarr;
     }
 
@@ -239,8 +257,19 @@ public:
 
     // Comparison operations
     // Return true if ==
-    bool operator==(const SMVector<T>&) {
-        return true;
+    bool operator==(const SMVector<T>& other) {
+        //check the size first
+        if (_size == other._size){
+            //looping for all elemets and then check if it's equal or not
+            for (size_t i = 0; i < _size; i++){
+                if (_vec[i] != other._vec[i]){
+                    return false;
+                }
+            }
+            return true;
+        }else{
+            return false;
+        }
     }
 
     // seif
